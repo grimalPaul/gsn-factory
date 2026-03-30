@@ -1,0 +1,16 @@
+defaults:
+  - default
+  - scheduler: FlowMatchEulerDiscreteScheduler
+
+name: sd3
+
+enable_vae_slicing: false
+pipeline_url_or_path: "${paths.model_dir}/stable-diffusion-3-medium-diffusers"
+torch_dtype: "bf16"
+drop_eot: true
+params_pipeline_inference:
+  num_inference_steps: 28
+  guidance_scale: 7.0
+  average_t5_clip: true
+  height: 768
+  width: 768

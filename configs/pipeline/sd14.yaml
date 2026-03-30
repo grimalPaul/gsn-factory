@@ -1,0 +1,13 @@
+defaults:
+  - default
+  - scheduler: ddpm
+
+name: sd14
+
+pipeline_url_or_path: ${paths.model_dir}/stable-diffusion-v1-4
+
+params_pipeline_inference:
+  num_inference_steps: 50
+  guidance_scale: 7.5
+  height: 512
+  width: 512

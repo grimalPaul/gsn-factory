@@ -1,0 +1,32 @@
+# @package _global_
+
+defaults:
+  - override /pipeline: sd14
+
+task_name: ${pipeline.name}_saga_multi_distrib_var
+pipeline:
+  save_dir: "${paths.images_dir}/sd14/saga_multi_distrib_var/${data.dataset_path_or_url}"
+  n_images: 16
+  batch_size_pipeline: 16
+  distrib_seed: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+
+  distrib_config:
+    _target_: src.models.gsn_config.DistribConfig
+    criterion:
+      _target_: src.models.gsn_criterion.iou.IOUGSN
+      # you can add other params here for the criterion if needed
+    step: 12
+    optimizer_class: "SGD"
+    max_opti: 50
+    step_size: 20
+    block: 4
+    per_channel: True
+    batch_size_noise: 10
+    init_mu: "x0_mean"
+    rescale: true
+    momentum_saga: 0.4
+    one_image_per_distrib: true
+
+data:
+  batch_size: 1 # x prompt per batch
+  dataset_path_or_url: ${paths.dataset_dir}/2_entities

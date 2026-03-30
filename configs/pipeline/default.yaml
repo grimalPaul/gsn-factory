@@ -1,0 +1,17 @@
+_target_: src.models.generate_pipeline.ImageGenerationPipeline
+
+pipeline_url_or_path: null
+enable_vae_slicing: true
+torch_dtype: "32"
+save_dir: null
+n_images: 16
+seeds: null
+batch_size_pipeline: 32
+distrib_config: null
+iteref_config: null
+gsng_config: null
+distrib_seed: [0]
+
+drop_eot: false
+clip_start_index_for_syngen: null
+t5_start_index_for_syngen: null

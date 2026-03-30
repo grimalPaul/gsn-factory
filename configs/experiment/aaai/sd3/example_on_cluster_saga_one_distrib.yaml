@@ -1,0 +1,50 @@
+# @package _global_
+
+defaults:
+  - override /pipeline: sd3
+  - override /hydra/launcher: submitit_example
+  - override /paths: YOUR_PATH_CONFIG_CLUSTER
+
+task_name: ${pipeline.name}_saga_one_distrib
+
+pipeline:
+  save_dir: "${paths.images_dir}/sd3/saga_one_distrib/${data.dataset_path_or_url}"
+  n_images: 16
+  batch_size_pipeline: 16
+
+  distrib_config:
+    _target_: src.models.gsn_config.DistribConfig
+    criterion:
+      _target_:
+        src.models.gsn_criterion.iou.IOUGSN
+        # you can add other params here for the criterion if needed
+    step: 5
+    optimizer_class: "SGD"
+    max_opti: 50
+    step_size: 20
+    block: 0
+    per_channel: False
+    batch_size_noise: 4
+    init_mu: "x0_mean"
+    rescale: true
+    momentum_saga: 0.7
+    one_image_per_distrib: false
+
+  height: 768
+  width: 768
+  batch_size_vae: 4
+
+data:
+  dataset_path_or_url: ${paths.dataset_dir}/2_entities
+  batch_size: 1 # x prompt per batch
+
+hydra:
+  launcher:
+    name: ${task_name}
+  mode: MULTIRUN
+  sweeper:
+    params:
+      # will launch 4 jobs per datasets because n_split=4
+      data.n_split: 4
+      data.split_id: range(${data.n_split})
+      data.dataset_path_or_url: ${paths.dataset_dir}/2_entities, ${paths.dataset_dir}/3_entities, ${paths.dataset_dir}/4_entities

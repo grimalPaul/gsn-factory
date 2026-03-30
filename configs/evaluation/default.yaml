@@ -1,0 +1,15 @@
+_target_: src.models.score_pipeline.ScoreModule
+
+save_dir: null
+seeds: null
+n_images: 16
+
+path_or_url_clipscore: ${paths.model_dir}/openai/clip-vit-base-patch16
+path_or_url_qualityscore: ${paths.model_dir}/openai/clip-vit-base-patch16
+path_or_url_aesthetics: ${paths.model_dir}/aesthetics-predictor-v2-sac-logos-ava1-l14-linearMSE
+path_or_url_image_text_sim_blip: ${paths.model_dir}/blip-image-captioning-base
+path_or_url_image_text_sim_clip: ${paths.model_dir}/openai/clip-vit-base-patch16
+
+params_vqa_model:
+  tokenizer: ${paths.model_dir}/flan-t5-xxl
+  model: ${paths.model_dir}/clip-flant5-xxl

@@ -1,0 +1,7 @@
+# @package _global_
+evaluation:
+  save_dir: "${paths.images_dir}/sd3/saga_one_distrib_var/2_entities"
+
+data:
+  batch_size: 1 # x prompt per batch
+  dataset_path_or_url: ${paths.dataset_dir}/2_entities

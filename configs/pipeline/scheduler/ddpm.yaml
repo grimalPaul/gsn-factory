@@ -1,0 +1,2 @@
+_target_: diffusers.schedulers.scheduling_ddpm.DDPMScheduler
+__partial__: true

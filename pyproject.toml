@@ -1,0 +1,64 @@
+[project]
+name = "gsn-factory"
+version = "0.1.0"
+description = "Codebase for GSN approach in diffusion-based image generation."
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "accelerate>=1.0.0",
+    "clip>=0.2.0",
+    "datasets>=3.0.1",
+    "diffusers==0.30.3",
+    "hydra-colorlog>=1.2.0",
+    "hydra-core>=1.3.2",
+    "hydra-joblib-launcher>=1.2.0",
+    "hydra-optuna-sweeper>=1.2.0",
+    "hydra-ray-launcher>=1.2.1",
+    "hydra-submitit-launcher>=1.2.0",
+    "lightning>=2.4.0",
+    "matplotlib>=3.9.2",
+    "nltk>=3.9.1",
+    "opencv-python>=4.10.0.84",
+    "optuna>=2.10.1",
+    "pandas>=2.2.3",
+    "pillow>=10.4.0",
+    "portalocker[redis]>=3.1.1",
+    "rich>=13.9.2",
+    "rootutils>=1.0.7",
+    "sentencepiece>=0.2.0",
+    "simple-aesthetics-predictor>=0.1.2",
+    "sqlalchemy==1.4.46",
+    "t2v-metrics>=1.1",
+    "tabulate>=0.9.0",
+    "torch>=2.4.1",
+    "torchinfo>=1.8.0",
+    "torchmetrics>=1.4.2",
+    "transformers<4.47,>=4.45.2",
+    "ultralytics==8.1.12",
+]
+
+
+[tool.ruff]
+lint.ignore = ["C901", "E501", "E741", "W605", "E402"]
+lint.select = ["C", "E", "F", "I", "W"]
+line-length = 119
+
+[dependency-groups]
+dev = [
+    "colorlog>=6.8.2",
+    "ipykernel>=6.29.5",
+    "ipywidgets>=8.1.5",
+    "matplotlib>=3.9.2",
+    "notebook>=7.2.2",
+    "pip>=24.2",
+    "plotly>=6.2.0",
+    "pre-commit>=4.0.0",
+    "pytest>=7.2.0",
+    "ruff>=0.6.9",
+    "seaborn>=0.13.2",
+]
+
+[tool.uv]
+required-environments = [
+    "sys_platform == 'darwin' and platform_machine == 'arm64'"
+]

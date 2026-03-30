@@ -1,0 +1,4 @@
+defaults:
+  - model_summary
+  - rich_progress_bar
+  - _self_

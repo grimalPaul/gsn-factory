@@ -1,0 +1,30 @@
+# @package _global_
+
+defaults:
+  - override /pipeline: sd14
+
+task_name: ${pipeline.name}_saga_bbox_one_distrib
+pipeline:
+  save_dir: "${paths.images_dir}/sd14/saga_bbox_one_distrib/${data.dataset_path_or_url}"
+  n_images: 16
+  batch_size_pipeline: 16
+
+  distrib_config:
+    _target_: src.models.gsn_config.DistribConfig
+    criterion:
+      _target_: src.models.gsn_criterion.RetentionLoss
+    step: 11
+    optimizer_class: "SGD"
+    max_opti: 50
+    step_size: 20
+    block: 0
+    log_var: True
+    per_channel: False
+    batch_size_noise: 10
+    init_mu: "x0_mean"
+    rescale: true
+    momentum_saga: 0.5
+
+data:
+  batch_size: 1 # x prompt per batch
+  dataset_path_or_url: ${paths.dataset_dir}/2_entities_bbox

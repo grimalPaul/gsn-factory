@@ -7,6 +7,9 @@ This repository contains the official implementation of the paper **"SAGA: Learn
 
 > State-of-the-art text-to-image models produce visually impressive results but often struggle with precise alignment to text prompts, leading to missing critical elements or unintended blending of distinct concepts. We propose a novel approach that learns a high-success-rate distribution conditioned on a target prompt, ensuring that generated images faithfully reflect the corresponding prompts. Our method explicitly models the signal component during the denoising process, offering fine-grained control that mitigates over-optimization and out-of-distribution artifacts. Moreover, our framework is training-free and seamlessly integrates with both existing diffusion and flow matching architectures. It also supports additional conditioning modalities — such as bounding boxes — for enhanced spatial alignment. Extensive experiments demonstrate that our approach outperforms current state-of-the-art methods.
 
+This repository contains also the implementation of the paper **Unique Step Refinement for Transformer-based Generative Models**, accepted at **ICPR 2026**. This paper focuses on the GSN approach and studies the role of the refinement steps in the sampling process. Configuration files for the experiments will be released soon.
+> Visual generative AI models often encounter challenges related to text-image alignment and reasoning limitations. In Stable Diffusion 1.4, a diffusion model based on UNet, these challenges are partially addressed at inference time with Generative Semantic Nursing, an iterative denoising process aiming to enhance text-image alignment. In this paper, we propose an extension of this approach to the recent Stable Diffusion 3, a Flow Matching Model based on transformer architecture. Moreover, we propose a method for selectively enhancing the signal at critical denoising steps, optimizing image generation based on input semantics. Our approach addresses the shortcomings of early-stage signal modifications, demonstrating that adjustments made at later stages yield superior results. We conduct extensive experiments to validate the effectiveness of our method in producing semantically aligned images on both Diffusion and Flow Matching models, achieving state-of-the-art performance. Our results highlight the importance of a judicious choice of sampling stage to improve performance and overall image alignment.
+
 We build upon the GSN (Generative Semantic Nursing) approach introduced by Chefer et al. (arXiv:2301.13826) and extend it with our SAGA method.
 
 The GSN field is rapidly evolving, with numerous methods leveraging attention maps during inference to refine image generation. We designed this codebase to facilitate the comparison of existing methods and the development of custom GSN losses. We hope this framework assists the community in implementing these techniques across new architectures.
@@ -85,6 +88,13 @@ To run generation and evaluation, download the models listed below and place the
 Use the `demo.ipynb` notebook to test generation and visualize results interactively.
 
 Execute experiments using specific configuration files located in `configs/experiment/aaai/`.
+
+You can find the configuration files for the experiments in the following directories:
+
+* SAGA: `configs/experiment/aaai/`
+* ICPR: `configs/experiment/icpr/` (will be released soon)
+
+The process to launch the experiments is the same for both. Follow the instructions below:
 
 **Local Execution:**
 

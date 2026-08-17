@@ -71,10 +71,14 @@ class ImageGenerationPipeline(L.LightningModule):
 
         super().__init__()
         if seeds is not None:
-            if not isinstance(seeds, list) or not all(isinstance(seed, int) for seed in seeds):
+            if not isinstance(seeds, list) or not all(
+                isinstance(seed, int) for seed in seeds
+            ):
                 raise ValueError("Seeds must be a list of integers")
             if n_images != len(seeds):
-                raise ValueError("Number of seeds must be equal to number of desired images to generate")
+                raise ValueError(
+                    "Number of seeds must be equal to number of desired images to generate"
+                )
             self.seeds = seeds
         else:
             self.seeds = list(range(n_images))
@@ -85,10 +89,14 @@ class ImageGenerationPipeline(L.LightningModule):
             self.save_dir.mkdir(parents=True, exist_ok=True)
             logger.info(f"Created directory {self.save_dir}")
         else:
-            logger.info(f"Directory {self.save_dir} already exists. In case of conflict, files will be overwritten.")
+            logger.info(
+                f"Directory {self.save_dir} already exists. In case of conflict, files will be overwritten."
+            )
 
         # Folder index
-        self.index_writer = ConcurrentWriter(self.save_dir / "index.txt", type_data="text")
+        self.index_writer = ConcurrentWriter(
+            self.save_dir / "index.txt", type_data="text"
+        )
         self.prompt_already_processed = self.index_writer.read_all_lines()
 
         # images folder
@@ -99,7 +107,9 @@ class ImageGenerationPipeline(L.LightningModule):
         self.save_hyperparameters(logger=False)
 
         if isinstance(prompts_to_generate, list):
-            self.all_is_processed = set(prompts_to_generate) == set(self.prompt_already_processed)
+            self.all_is_processed = set(prompts_to_generate) == set(
+                self.prompt_already_processed
+            )
             if self.all_is_processed:
                 logger.info("All the images are already generated")
         else:
@@ -115,7 +125,9 @@ class ImageGenerationPipeline(L.LightningModule):
                 self.batch_size_pipeline = n_images
 
             if name not in AVAIL_PIPELINE:
-                raise ValueError(f"Pipeline {name} not found in {AVAIL_PIPELINE.keys()}")
+                raise ValueError(
+                    f"Pipeline {name} not found in {AVAIL_PIPELINE.keys()}"
+                )
             self.name = name
             if torch_dtype == "32":
                 dtype = torch.float32
@@ -125,11 +137,15 @@ class ImageGenerationPipeline(L.LightningModule):
                 dtype = torch.float16
 
             logger.info(f"run model with dtype {dtype}")
-            self.pipeline = AVAIL_PIPELINE[name].from_pretrained(pipeline_url_or_path, torch_dtype=dtype)
+            self.pipeline = AVAIL_PIPELINE[name].from_pretrained(
+                pipeline_url_or_path, torch_dtype=dtype
+            )
             self.pipeline.safety_checker = None
 
             if scheduler is not None:
-                self.pipeline.scheduler = scheduler.from_config(self.pipeline.scheduler.config)
+                self.pipeline.scheduler = scheduler.from_config(
+                    self.pipeline.scheduler.config
+                )
                 logger.info(f"Scheduler set to {self.pipeline.scheduler}")
 
             if params_pipeline_inference is not None:
@@ -154,7 +170,9 @@ class ImageGenerationPipeline(L.LightningModule):
                 self.drop_eot = None
 
             # cast self.pipeline_inference_params to correct type
-            self.pipeline_inference_params = OmegaConf.to_container(self.pipeline_inference_params)
+            self.pipeline_inference_params = OmegaConf.to_container(
+                self.pipeline_inference_params
+            )
 
             if enable_vae_slicing and not self.is_sd3():
                 self.pipeline.enable_vae_slicing()
@@ -285,7 +303,9 @@ class ImageGenerationPipeline(L.LightningModule):
         if isinstance(data, list):
             return [v for i, v in enumerate(data) if i not in indices_to_remove]
         elif isinstance(data, dict):
-            return {k: self.remove_indices(v, indices_to_remove) for k, v in data.items()}
+            return {
+                k: self.remove_indices(v, indices_to_remove) for k, v in data.items()
+            }
         else:
             return data
 
@@ -317,9 +337,13 @@ class ImageGenerationPipeline(L.LightningModule):
             if self.is_sd3():
                 extra_params["adjs_token_t5"] = []
         for prompt_, entity_list_, adj_list_ in zip(prompt, entity_list, adj_list):
-            token_indices = self.pipeline.get_attention_idx_from_token(prompt_, entity_list_)
+            token_indices = self.pipeline.get_attention_idx_from_token(
+                prompt_, entity_list_
+            )
             if adj_list_ is not None:
-                adj_indices = self.pipeline.get_attention_idx_from_token(prompt_, adj_list_)
+                adj_indices = self.pipeline.get_attention_idx_from_token(
+                    prompt_, adj_list_
+                )
             else:
                 adj_indices = None
             if self.drop_eot or isinstance(criterion, SynGen):
@@ -406,7 +430,9 @@ class ImageGenerationPipeline(L.LightningModule):
                 colors_from_prompt = {}
                 for adj in adjs:
                     word = batch["adj_apply_on"][adj][i]
-                    colors_from_prompt[batch["labels_params"][word][i]] = batch["adjs_params"][adj][i]
+                    colors_from_prompt[batch["labels_params"][word][i]] = batch[
+                        "adjs_params"
+                    ][adj][i]
                 color_classes.append(colors_from_prompt)
 
         extra_params = self.get_extras_params(
@@ -423,7 +449,9 @@ class ImageGenerationPipeline(L.LightningModule):
         batch_seeds = self.create_packing_list(seeds, self.batch_size_pipeline)
 
         for b_ in batch_seeds:
-            batch_generators.append([torch.Generator(self.device).manual_seed(s) for s in b_])
+            batch_generators.append(
+                [torch.Generator(self.device).manual_seed(s) for s in b_]
+            )
 
         if batch_size > 1 and self.batch_size_pipeline < batch_size * self.n_images:
             raise ValueError(
@@ -436,13 +464,19 @@ class ImageGenerationPipeline(L.LightningModule):
                 extra_params["generator_distrib"] = [
                     torch.Generator(device=self.device).manual_seed(s)
                     for s in self.distrib_seed
-                    for _ in range(batch_size)  # one seed per distribution to be learned
+                    for _ in range(
+                        batch_size
+                    )  # one seed per distribution to be learned
                 ]
 
             images_stack.append(
                 self.pipeline(
                     prompt=prompt,
-                    num_images_per_prompt=(self.n_images if len(generators) >= self.n_images else len(generators)),
+                    num_images_per_prompt=(
+                        self.n_images
+                        if len(generators) >= self.n_images
+                        else len(generators)
+                    ),
                     generator=generators,
                     output_type="pt",  # return NCHW tensor with "pt"
                     **extra_params,
@@ -455,7 +489,9 @@ class ImageGenerationPipeline(L.LightningModule):
         for i, p in enumerate(prompt):
             self.save_images(
                 names=[f"{'_'.join(p.split())}_{s}.png" for s in self.seeds],
-                images=self.torch_to_Image(images[i * self.n_images : (i + 1) * self.n_images]),
+                images=self.torch_to_Image(
+                    images[i * self.n_images : (i + 1) * self.n_images]
+                ),
             )
             self.index_writer.write_text(p)
 
@@ -469,4 +505,6 @@ class ImageGenerationPipeline(L.LightningModule):
         return [objects[i : i + n] for i in range(0, len(objects), n)]
 
     def save_images(self, names, images):
-        self.images_writer.write_images(images=[(name, img) for name, img in zip(names, images)])
+        self.images_writer.write_images(
+            images=[(name, img) for name, img in zip(names, images)]
+        )

@@ -185,7 +185,7 @@ The following implementations are used for baseline comparisons. For consistent 
 
 In this part we explain the different concepts implemented and how they are articulated.
 
-#### GSN Guidance (GSNGg)
+#### GSN Guidance (GSNg)
 
 *Chefer et al.* [arxiv:2301.13826](https://arxiv.org/abs/2301.13826) introduced GSN guidance. This involves shifting the latent image $x_t$ once per diffusion step during the first half of the sampling process to maintain image quality. The shift is applied using a gradient descent step on the latent image $x_t$ : $x_{t} \leftarrow x_t - \alpha_{t} \cdot \nabla_{x_t} \mathcal{L}$, with $\alpha_{t}$, the learning rate.
 
